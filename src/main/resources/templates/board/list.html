@@ -1,0 +1,185 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/common :: head('게시판')">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link href="starter-template.css" th:href="@{/starter-template.css}" rel="stylesheet">
+
+    <title>게시판</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" th:replace="fragments/common :: menu('board')">
+    </nav>
+
+    <div class="container">
+        <h2>게시판</h2>
+
+
+        <!--    <table class="table table-striped">-->
+        <!--        <thead>-->
+        <!--        <tr>-->
+        <!--            <th scope="col">번호</th>-->
+        <!--            <th scope="col">제목</th>-->
+        <!--            <th scope="col">작성자</th>-->
+        <!--        </tr>-->
+        <!--        </thead>-->
+        <!--        <tbody>-->
+        <!--        <tr th:each="board : ${boards}">-->
+        <!--            <td th:text="${board.uid}">1</td>-->
+        <!--            <td th:text="${board.title}">섹스</td>-->
+        <!--            <td th:text="${board.writer}">홍길동</td>-->
+        <!--        </tr>-->
+        <!--        </tbody>-->
+        <!--    </table>-->
+
+        <table class="table table-striped" id="tb">
+            <thead>
+                <tr>
+                    <th scope="col">번호</th>
+                    <th scope="col">제목</th>
+                    <th scope="col">작성자</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="board : ${boards}">
+                    <td th:text="${board.uid}">1</td>
+                    <td th:text="${board.title}">섹스</td>
+                    <td th:text="${board.writer}">홍길동</td>
+                    <td><button type="button" class="btnDel" th:id="${board.uid}">Delete</button>
+                        <button type="button" id="btnModi">Update</button></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <!-- board.pageable.pageNumber+1이 1이면 비활성화-->
+                <li class="page-item" th:classappend="${1 == pageNum} ? 'disabled'">
+                    <a class="page-link" href="#" th:href="@{/board/list(pageNum=${pageNum - 1})}">Previous</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(start, end)}"
+                th:classappend="${i == pageNum} ? 'disabled'"
+            th:style="${i == pageNum} ? 'background Color: white;'">
+                <a class="page-link" href="#"th:href="@{/board/list(pageNum=${i})}" th:text="${i}">1</a>
+            </li>
+
+            <li class="page-item"><a class="page-link" href="#" th:href="@{/board/list(pageNum=${pageNum + 1})}">Next</a></li>
+        </ul>
+    </nav>
+<!--    <div class="text-right">-->
+<!--        <a type="button" class="btn btn-primary" th:href="@{/board/form}">쓰기</a>-->
+<!--    </div>-->
+
+
+</div>
+
+
+<!-- Option 2: jQuery, Popper.js, and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"
+        integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous">
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+
+<script>
+
+    // $(document).ready(function(){
+    //     $.ajax({
+    //         url:'/admin/ajaxList',
+    //         method:'GET',
+    //         success: function(response){
+    //            alert('success');
+    //             var h = [];
+    //             response.forEach(item => {
+    //                 h.push(`<tr>`);
+    //                     h.push(`<td>${item.uid}</td>`);
+    //                     h.push(`<td>${item.title}</td>`);
+    //                     h.push(`<td>${item.writer}</td>`);
+    //                     h.push(`<td><button type="button" id="btnDel">Delete</button>
+    //                         <button type="button" id="btnModify">Update</button></td>`);
+    //                 h.push(`<tr>`);
+    //             });
+    //             document.querySelector("#tb>tbody").innerHTML = h.join("");
+    //         },
+    //         error: function(){
+    //             alert('error');
+    //         }
+
+    //     });// ajax
+    // }); //document.ready
+
+    $('.btnDel').click(function(event){
+        var uid = event.target.id;
+        var data={uid: uid};
+        var jsonData = JSON.stringify(data);
+
+        if (window.confirm("削除しますか？")) {
+         $.ajax({
+            url:'/admin/ajaxDelete',
+            type:'DELETE',
+            data : jsonData,
+            contentType: 'application/json; charset=UTF-8',
+            // enctype : "multipart/form-data",
+            success: function(){
+               location.href = "/board/list";
+            },
+                error: function(){
+                    alert('error');
+                }
+
+            });
+        } else {
+            return;
+        }
+    }); 
+
+    $('.btnDel').click(function(event){
+        var uid = event.target.id;
+        var data={uid: uid};
+        var jsonData = JSON.stringify(data);
+
+        if (window.confirm("削除しますか？")) {
+         $.ajax({
+            url:'/admin/ajaxDelete',
+            type:'DELETE',
+            data : jsonData,
+            contentType: 'application/json; charset=UTF-8',
+            // enctype : "multipart/form-data",
+            success: function(){
+               location.href = "/board/list";
+            },
+                error: function(){
+                    alert('error');
+                }
+
+            });
+        } else {
+            return;
+        }
+    }); //document.ready
+
+
+
+</script>
+
+</body>
+
+</html>
