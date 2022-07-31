@@ -34,6 +34,7 @@ public class BoardAPIController {
         map.put("jsonBoards", jsonBoards);
 
         return new ResponseEntity(boards, HttpStatus.OK);
+        // test
     }
 
     @RequestMapping(value = "/ajaxDelete", method = RequestMethod.DELETE)
