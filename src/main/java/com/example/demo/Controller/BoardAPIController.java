@@ -24,9 +24,11 @@ public class BoardAPIController {
     @RequestMapping(value = "/ajaxList", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> list(){
 
+
         Gson gson = new Gson();
 
 
+        // Map
         Map<String, Object> map = new HashMap<>();
         List<BoardModel> boards = boardService.ajaxBoardList();
         String jsonBoards = gson.toJson(boards);

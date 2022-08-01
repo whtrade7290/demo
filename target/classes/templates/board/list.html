@@ -8,78 +8,78 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link href="starter-template.css" th:href="@{/starter-template.css}" rel="stylesheet">
 
     <title>게시판</title>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" th:replace="fragments/common :: menu('board')">
-    </nav>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" th:replace="fragments/common :: menu('board')">
+</nav>
 
-    <div class="container">
-        <h2>게시판</h2>
-
-
-        <!--    <table class="table table-striped">-->
-        <!--        <thead>-->
-        <!--        <tr>-->
-        <!--            <th scope="col">번호</th>-->
-        <!--            <th scope="col">제목</th>-->
-        <!--            <th scope="col">작성자</th>-->
-        <!--        </tr>-->
-        <!--        </thead>-->
-        <!--        <tbody>-->
-        <!--        <tr th:each="board : ${boards}">-->
-        <!--            <td th:text="${board.uid}">1</td>-->
-        <!--            <td th:text="${board.title}">섹스</td>-->
-        <!--            <td th:text="${board.writer}">홍길동</td>-->
-        <!--        </tr>-->
-        <!--        </tbody>-->
-        <!--    </table>-->
-
-        <table class="table table-striped" id="tb">
-            <thead>
-                <tr>
-                    <th scope="col">번호</th>
-                    <th scope="col">제목</th>
-                    <th scope="col">작성자</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="board : ${boards}">
-                    <td th:text="${board.uid}">1</td>
-                    <td th:text="${board.title}">섹스</td>
-                    <td th:text="${board.writer}">홍길동</td>
-                    <td><button type="button" class="btnDel" th:id="${board.uid}">Delete</button>
-                        <button type="button" id="btnModi">Update</button></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center">
-                <!-- board.pageable.pageNumber+1이 1이면 비활성화-->
-                <li class="page-item" th:classappend="${1 == pageNum} ? 'disabled'">
-                    <a class="page-link" href="#" th:href="@{/board/list(pageNum=${pageNum - 1})}">Previous</a>
-                </li>
-                <li class="page-item" th:each="i : ${#numbers.sequence(start, end)}"
+<div class="container">
+    <h2>게시판</h2>
+    <form class="form-inline d-flex justify-content-end" method="GET" th:action="@{/board/list}">
+        <Div class="form-inline d-flex justify-content-end" style="bottom:40px;" method="GET" th:action="@{/board/list}">
+            <div class="form-group mx-sm-3 mb-2 justify-content-end">
+                <select name="category">
+                    <option th:text="${boardModel.title}">title</option>
+                    <option th:text="${boardModel.content}">content</option>
+                    <option th:text="${boardModel.writer}">writer</option>
+                </select>
+                <label for="searchText" class="sr-only">검색</label>
+                <input type="text" class="form-control" id="searchText" name="searchText" th:value="${param.searchText}">
+            </div>
+            <button type="submit" class="btn btn-light mb-2">검색</button>
+        </Div>
+    </form>
+    <table class="table table-striped" id="tb">
+        <thead>
+        <tr>
+            <th scope="col">번호</th>
+            <th scope="col">제목</th>
+            <th scope="col">작성자</th>
+            <th scope="col">시간</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="board : ${boards}">
+            <td th:text="${board.uid}">1</td>
+            <td th:text="${board.title}">홍길동전</td>
+            <td th:text="${board.writer}">홍길동이 살았다가 죽었다</td>
+            <td th:text="${#dates.format(board.save_time, 'yyyy-MM-dd HH:mm')}"></td>
+            <td>
+                <button type="button" class="btnDel" th:id="${board.uid}">Delete</button>
+                <button type="button" id="btnModi">Update</button>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <!-- board.pageable.pageNumber+1이 1이면 비활성화-->
+            <li class="page-item" th:classappend="${1 == pageNum} ? 'disabled'">
+                <a class="page-link" href="#" th:href="@{/board/list(pageNum=${pageNum - 1})}">Previous</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(start, end)}"
                 th:classappend="${i == pageNum} ? 'disabled'"
-            th:style="${i == pageNum} ? 'background Color: white;'">
-                <a class="page-link" href="#"th:href="@{/board/list(pageNum=${i})}" th:text="${i}">1</a>
+                th:style="${i == pageNum} ? 'background Color: white;'">
+                <a class="page-link" href="#" th:href="@{/board/list(pageNum=${i})}" th:text="${i}">1</a>
             </li>
 
-            <li class="page-item"><a class="page-link" href="#" th:href="@{/board/list(pageNum=${pageNum + 1})}">Next</a></li>
+            <li class="page-item"><a class="page-link" href="#"
+                                     th:href="@{/board/list(pageNum=${pageNum + 1})}">Next</a></li>
         </ul>
     </nav>
-<!--    <div class="text-right">-->
-<!--        <a type="button" class="btn btn-primary" th:href="@{/board/form}">쓰기</a>-->
-<!--    </div>-->
+    <!--    <div class="text-right">-->
+    <!--        <a type="button" class="btn btn-primary" th:href="@{/board/form}">쓰기</a>-->
+    <!--    </div>-->
 
 
 </div>
@@ -100,32 +100,6 @@
 
 
 <script>
-
-    // $(document).ready(function(){
-    //     $.ajax({
-    //         url:'/admin/ajaxList',
-    //         method:'GET',
-    //         success: function(response){
-    //            alert('success');
-    //             var h = [];
-    //             response.forEach(item => {
-    //                 h.push(`<tr>`);
-    //                     h.push(`<td>${item.uid}</td>`);
-    //                     h.push(`<td>${item.title}</td>`);
-    //                     h.push(`<td>${item.writer}</td>`);
-    //                     h.push(`<td><button type="button" id="btnDel">Delete</button>
-    //                         <button type="button" id="btnModify">Update</button></td>`);
-    //                 h.push(`<tr>`);
-    //             });
-    //             document.querySelector("#tb>tbody").innerHTML = h.join("");
-    //         },
-    //         error: function(){
-    //             alert('error');
-    //         }
-
-    //     });// ajax
-    // }); //document.ready
-
     $('.btnDel').click(function(event){
         var uid = event.target.id;
         var data={uid: uid};
@@ -139,7 +113,6 @@
             contentType: 'application/json; charset=UTF-8',
             // enctype : "multipart/form-data",
             success: function(){
-               alert('success');
                location.href = "/board/list";
             },
                 error: function(){
@@ -151,6 +124,7 @@
             return;
         }
     }); //document.ready
+
 
 
 

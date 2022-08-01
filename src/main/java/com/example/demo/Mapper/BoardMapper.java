@@ -7,7 +7,7 @@ import java.util.List;
 
 @Mapper
 public interface BoardMapper {
-    List<BoardModel> getBoardList(int startRow, int pageSize);
+    List<BoardModel> getBoardList(int startRow, int pageSize, String searchText, String category);
     List<BoardModel> ajaxBoardList();
 
     int getCountBoard();

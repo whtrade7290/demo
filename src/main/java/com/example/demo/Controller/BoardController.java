@@ -21,8 +21,13 @@ public class BoardController {
     private BoardService boardService;
 
     @RequestMapping("/list")
-    public String list(@RequestParam(defaultValue = "1") int pageNum, Model model) {
-        log.info("list() 호출");
+    public String list(@RequestParam(defaultValue = "1") int pageNum,
+                       @RequestParam(defaultValue = "") String searchText,
+                       @RequestParam(defaultValue = "") String category,
+                       BoardModel boardModel,
+                       Model model) {
+        log.info("searchText == " + searchText);
+        log.info("category == " + category);
 
         // 전체 글갯수 가져오기
         // int count = noticeDao.getCountAll();
@@ -44,7 +49,8 @@ public class BoardController {
         List<BoardModel> boards = null;
         if (count > 0) {
             //noticeList = noticeDao.getNotices(startRow, pageSize);
-            boards = boardService.getBoardList(startRow, pageSize);
+            boards = boardService.getBoardList(startRow, pageSize, searchText, category);
+            log.info("boards ==" + boards);
         }
 
 
@@ -95,9 +101,10 @@ public class BoardController {
         } // if
 
 
-
+        model.addAttribute("boardModel", boardModel);
         model.addAttribute("boards", boards);
         model.addAttribute("pageNum", pageNum);
+
 
 
 

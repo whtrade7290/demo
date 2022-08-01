@@ -12,8 +12,8 @@ public class BoardService {
     @Autowired
     private BoardMapper boardMapper;
 
-    public List<BoardModel> getBoardList(int startRow, int pageSize) {
-        return boardMapper.getBoardList(startRow, pageSize);
+    public List<BoardModel> getBoardList(int startRow, int pageSize, String searchText, String category) {
+        return boardMapper.getBoardList(startRow, pageSize, searchText, category);
     }
     public List<BoardModel> ajaxBoardList(){
         return boardMapper.ajaxBoardList();
