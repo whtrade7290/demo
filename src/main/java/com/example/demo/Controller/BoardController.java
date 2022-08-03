@@ -6,6 +6,7 @@ import com.example.demo.Service.BoardService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +21,7 @@ public class BoardController {
     @Autowired
     private BoardService boardService;
 
+    
     @RequestMapping("/list")
     public String list(@RequestParam(defaultValue = "1") int pageNum,
                        @RequestParam(defaultValue = "") String searchText,
@@ -28,6 +30,7 @@ public class BoardController {
                        Model model) {
         log.info("searchText == " + searchText);
         log.info("category == " + category);
+
 
         // 전체 글갯수 가져오기
         // int count = noticeDao.getCountAll();
@@ -83,6 +86,17 @@ public class BoardController {
             if (endPage > pageCount) {
                 endPage = pageCount;
             }
+            int numberOfPosts = boards.size();
+            double resultOfPages = numberOfPosts/(double)5;
+            if (resultOfPages < 1) {
+                resultOfPages = 1;
+            }
+            if (resultOfPages % 5 != 0){
+
+                resultOfPages= Math.floor(resultOfPages);
+
+            }
+
 
             // 뷰에서 필요한 데이터를 PageDto에 저장
 
@@ -93,7 +107,12 @@ public class BoardController {
             pageModel.setEndPage(endPage);
 
             model.addAttribute("start", startPage);
-            model.addAttribute("end", endPage);
+            if(resultOfPages >= 5){
+                model.addAttribute("end", endPage);
+            }else {
+                model.addAttribute("end", resultOfPages);
+            }
+
 
             log.info("start = " + startPage);
             log.info("end = " + endPage);

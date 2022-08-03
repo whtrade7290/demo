@@ -28,14 +28,6 @@
                     <option th:value="${boardModel.content}">content</option>
                     <option th:value="${boardModel.writer}">writer</option>
                 </select>
-<!--                참고!!!!!!!!!!!!!!!!!!!!!-->
-<!--                https://hajoung56.tistory.com/61-->
-<!--                <select class="form-control col-lg-2 required">-->
-<!--                    <th:block th:each="num : ${#numbers.sequence(1,10)}">-->
-<!--                        <option th:value="${num}" th:text="${num}" th:if="${result.joinSize eq num ? 'selected' : ''}">-->
-<!--                        </option>-->
-<!--                    </th:block>-->
-<!--                </select>-->
                 <label for="searchText" class="sr-only">검색</label>
                 <input type="text" class="form-control" id="searchText" name="searchText" th:value="${param.searchText}">
             </div>

@@ -7,17 +7,13 @@
     <select id="getBoardList" resultType="com.example.demo.Model.BoardModel">
         SELECT uid, title, content, writer, save_time
         FROM testdb.board
-        <if test="category == 'titleText'">
-            WHERE title LIKE CONCAT('%', #{searchText}, '%')
-        </if>
-        <if test="category == 'contentText'">
-            WHERE content LIKE CONCAT('%', #{searchText}, '%')
-        </if>
-        <if test="category == 'writer'">
-            WHERE writer LIKE CONCAT('%', #{searchText}, '%')
-        </if>
+        WHERE title LIKE CONCAT('%', #{searchText}, '%')
+        OR content LIKE CONCAT('%', #{searchText}, '%')
+        OR writer LIKE CONCAT('%', #{searchText}, '%')
+        OR title NOT LIKE CONCAT('%', '', '%')
+        OR content NOT LIKE CONCAT('%', '', '%')
+        OR writer NOT LIKE CONCAT('%', '', '%')
         ORDER BY save_time DESC
-        LIMIT #{startRow}, #{pageSize}
     </select>
 
 

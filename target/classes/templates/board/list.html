@@ -24,9 +24,9 @@
         <Div class="form-inline d-flex justify-content-end" style="bottom:40px;" method="GET" th:action="@{/board/list}">
             <div class="form-group mx-sm-3 mb-2 justify-content-end">
                 <select name="category">
-                    <option th:text="${boardModel.title}">title</option>
-                    <option th:text="${boardModel.content}">content</option>
-                    <option th:text="${boardModel.writer}">writer</option>
+                    <option th:value="${boardModel.title}">title</option>
+                    <option th:value="${boardModel.content}">content</option>
+                    <option th:value="${boardModel.writer}">writer</option>
                 </select>
                 <label for="searchText" class="sr-only">검색</label>
                 <input type="text" class="form-control" id="searchText" name="searchText" th:value="${param.searchText}">
