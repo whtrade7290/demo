@@ -55,4 +55,31 @@ public class BoardAPIController {
         return new ResponseEntity("OK", HttpStatus.OK);
     }
 
+    @PostMapping (value = "/comunityList")
+    public ResponseEntity<?> comunityList(@RequestBody  Map<String, Object> params){
+
+        String strStartRow = (String) params.get("startRow");
+        int startRow = Integer.parseInt(strStartRow);
+
+        int pageSize = 10;
+
+        String strPageNum = (String)params.get("pageNum");
+        int pageNum = Integer.parseInt(strPageNum);
+
+        String sortCode = (String)params.get("sortCode");
+        String searchText = (String)params.get("searchText");
+
+
+        log.info("testestset");
+        Map<String, Object> map = new HashMap<>();
+
+        List<BoardModel> communityList = boardService.selectCommunity(startRow, pageSize, sortCode, searchText);
+        map.put("communityList", communityList);
+
+        map.put("pageNum", pageNum);
+
+        log.info("communityList == " + communityList);
+        return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+    }
+
 }

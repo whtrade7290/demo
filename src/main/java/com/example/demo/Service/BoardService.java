@@ -28,4 +28,21 @@ public class BoardService {
         boardMapper.boardDelete(uid);
 
     }
+
+    public void insertTest(String out){
+        boardMapper.insertTest(out);
+    }
+
+    public void testSelect() {
+        boardMapper.testSelect();
+    }
+
+    public List<BoardModel> selectCommunity(int startRow, int pageSize, String sortCode, String searchText) {
+        return boardMapper.selectCommunity(startRow, pageSize, sortCode, searchText);
+    }
+
+    public String getBoardTest(){
+        return boardMapper.getBoardTest();
+    }
+
 }

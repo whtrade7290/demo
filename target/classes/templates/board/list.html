@@ -34,6 +34,9 @@
             <button type="submit" class="btn btn-light mb-2">검색</button>
         </Div>
     </form>
+    <form class="form-inline d-flex justify-content-end" method="POST" th:action="@{/board/insertTest}">
+        <button type="submit" class="btn btn-light mb-2">테스트!!!!!!!!!!!</button>
+    </form>
     <table class="table table-striped" id="tb">
         <thead>
         <tr>
@@ -70,7 +73,7 @@
             <li class="page-item" th:each="i : ${#numbers.sequence(start, end)}"
                 th:classappend="${i == pageNum} ? 'disabled'"
                 th:style="${i == pageNum} ? 'background Color: white;'">
-                <a class="page-link" href="#" th:href="@{/board/list(pageNum=${i})}" th:text="${i}">1</a>
+                <a class="page-link" href="#" th:href="@{/board/list(pageNum=${i}, searchText=${searchText})}" th:text="${i}">1</a>
             </li>
 
             <li class="page-item"><a class="page-link" href="#"

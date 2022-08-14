@@ -12,4 +12,6 @@ public class BoardModel {
     private String content;
     private String writer;
     private Timestamp save_time;
+    private String binaryFile;
+
 }

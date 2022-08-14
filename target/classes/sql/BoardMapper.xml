@@ -13,7 +13,15 @@
         OR title NOT LIKE CONCAT('%', '', '%')
         OR content NOT LIKE CONCAT('%', '', '%')
         OR writer NOT LIKE CONCAT('%', '', '%')
-        ORDER BY save_time DESC
+        ORDER BY uid ASC
+        limit #{startRow}, #{pageSize}
+    </select>
+
+    <select id="getBoardTest" resultType="String">
+        SELECT binaryFile
+        FROM testdb.board
+        Where uid = 127;
+
     </select>
 
 
@@ -28,6 +36,18 @@
     <delete id="boardDelete">
         DELETE FROM testdb.board WHERE uid = #{uid};
     </delete>
+
+    <select id="testSelect">
+        select max(uid) Into @max from testdb.board;
+        select max(uid-10) Into @min from testdb.board;
+        select max(uid-5) Into @middle from testdb.board;
+        select max(pageNum) Into @Pnum from testdb.board;
+    </select>
+
+    <insert id="insertTest">
+        Insert into testdb.board (title, content, writer, pageNum, binaryFile)
+                            value('Test', 'Test', 'Test', 1, #{binaryFile})
+    </insert>
 
 
 </mapper>

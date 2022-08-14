@@ -4,13 +4,16 @@ import com.example.demo.Model.BoardModel;
 import com.example.demo.Model.PageModel;
 import com.example.demo.Service.BoardService;
 import lombok.extern.java.Log;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.*;
 import java.util.List;
 
 @Log
@@ -33,7 +36,6 @@ public class BoardController {
 
 
         // 전체 글갯수 가져오기
-        // int count = noticeDao.getCountAll();
         int count = boardService.getCountBoard(); // 검색어 기준으로 글갯수 가져오기
 
 
@@ -51,7 +53,6 @@ public class BoardController {
         // 글목록 가져오기
         List<BoardModel> boards = null;
         if (count > 0) {
-            //noticeList = noticeDao.getNotices(startRow, pageSize);
             boards = boardService.getBoardList(startRow, pageSize, searchText, category);
             log.info("boards ==" + boards);
         }
@@ -107,11 +108,8 @@ public class BoardController {
             pageModel.setEndPage(endPage);
 
             model.addAttribute("start", startPage);
-            if(resultOfPages >= 5){
-                model.addAttribute("end", endPage);
-            }else {
-                model.addAttribute("end", resultOfPages);
-            }
+            model.addAttribute("end", endPage);
+
 
 
             log.info("start = " + startPage);
@@ -123,6 +121,7 @@ public class BoardController {
         model.addAttribute("boardModel", boardModel);
         model.addAttribute("boards", boards);
         model.addAttribute("pageNum", pageNum);
+        model.addAttribute("searchText", searchText);
 
 
 
@@ -131,4 +130,103 @@ public class BoardController {
 
         return "board/list";
     }
+    @RequestMapping(value = "/insertTest", method = RequestMethod.POST)
+    public String insertTest(){
+
+        boardService.testSelect();
+        boardService.insertTest("");
+
+        log.info("실행완료");
+        return "board/list";
+    }
+
+    String out = new String();
+    @RequestMapping(value = "/fileToBinary")
+    public String fileToBinary(){
+
+        out = "";
+
+        FileInputStream fis = null;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        File file = new File("C:\\Users\\WHtra\\Downloads\\jlpt 자격증.jpg");
+
+        log.info("file == " + file.getName());
+
+        try{
+            fis = new FileInputStream(file);
+        }catch (FileNotFoundException e){
+            log.info("FileNotFoundException Error");
+        }
+
+        int len = 0;
+        byte[] buf = new byte[1024];
+        try {
+            while ((len = fis.read(buf)) != -1){
+                baos.write(buf, 0, len);
+            }
+
+            byte[] fileArray = baos.toByteArray();
+            out = new String(base64Enc(fileArray));
+
+            fis.close();
+            baos.close();
+        }catch (IOException e){
+            log.info("IOException Error");
+        }
+
+        log.info("out ==" + out);
+
+        boardService.insertTest(out);
+
+        return "board/fileBinaryTest";
+    }
+
+    @RequestMapping(value = "/binaryToFile")
+    public String binaryToFile(){
+
+        String binaryFile = boardService.getBoardTest();
+
+        log.info("binaryFile ==" + binaryFile);
+
+        String filePath = "C:\\Users\\WHtra\\Downloads";
+        String fileName = "TestFile";
+
+        File fileDir = new File(filePath);
+        if (!fileDir.exists()) {
+        fileDir.mkdirs();
+        }
+
+        File destFile = new File(filePath +"\\"+ fileName);
+
+        byte[] buff = binaryFile.getBytes();
+        String toStr = new String(buff);
+        byte[] b64dec = base64Dec(toStr);
+
+        try {
+          FileOutputStream fos = new FileOutputStream(destFile);
+          fos.write(b64dec);
+          fos.close();
+
+        } catch (IOException e){
+            log.info("IOException Error");
+        }
+
+
+
+        log.info("저장 됐는지 확인해봐!");
+
+        return "board/fileBinaryTest";
+    }
+
+    private  byte[] base64Dec(String toStr) {
+        return Base64.decodeBase64(toStr);
+    }
+
+    public  byte[] base64Enc(byte[] buffer) {
+    return Base64.encodeBase64(buffer);
+    }
+
+
+
 }
