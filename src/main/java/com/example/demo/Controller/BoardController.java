@@ -5,6 +5,10 @@ import com.example.demo.Model.PageModel;
 import com.example.demo.Service.BoardService;
 import lombok.extern.java.Log;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,13 +16,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.List;
 
 @Log
 @Controller
-@RequestMapping("/board")
+@RequestMapping("/board/*")
 public class BoardController {
 
     @Autowired
@@ -227,6 +232,70 @@ public class BoardController {
     return Base64.encodeBase64(buffer);
     }
 
+    @RequestMapping("/excelToData")
+    public String excelToData(){
+
+        return "board/excelToData";
+    }
+    @RequestMapping(value = "/excelToData",method = RequestMethod.POST)
+    public String excelToData(@RequestParam(name = "excelFile", required = false) MultipartFile multipartFile){
+
+        try{
+            FileInputStream file = new FileInputStream("C:\\Users\\WHtra\\Desktop\\학습\\test.xlsx");
+            XSSFWorkbook workbook = new XSSFWorkbook(file);
+
+            int rowNo = 0;
+            int cellIndex = 0;
+
+            XSSFSheet sheet = workbook.getSheetAt(0);
+
+            int rows = sheet.getPhysicalNumberOfRows();
+            for (rowNo = 0; rowNo<rows; rowNo++){
+                XSSFRow row = sheet.getRow(rowNo);
+                if (row != null){
+                    int cells = row.getPhysicalNumberOfCells();
+
+                    for (cellIndex = 0; cellIndex <= cells; cellIndex++){
+                        XSSFCell cell = row.getCell(cellIndex);
+                        String value="";
+                        if (cell == null){
+                            continue;
+                        }else {
+
+                            switch (cell.getCellType()){
+                                case XSSFCell.CELL_TYPE_FORMULA:
+                                    value = cell.getCellFormula();
+                                    break;
+                                case XSSFCell.CELL_TYPE_NUMERIC:
+                                    value = cell.getNumericCellValue() + "";
+                                    break;
+                                case XSSFCell.CELL_TYPE_STRING:
+                                    value = cell.getStringCellValue() + "";
+                                    break;
+                                case XSSFCell.CELL_TYPE_BLANK:
+                                    value = cell.getBooleanCellValue() + "";
+                                    break;
+                                case XSSFCell.CELL_TYPE_ERROR:
+                                    value = cell.getErrorCellValue() + "";
+                                    break;
+
+                            }
+                        }
+                        log.info(rowNo + "번 행 : " + cellIndex + "번 열 값은: " + value);
+                    }
+                }
+            }
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+
+
+        return "board/excelToDataResult";
+    }
 
 
 }
