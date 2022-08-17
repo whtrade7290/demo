@@ -25,4 +25,8 @@ public interface BoardMapper {
                                          @Param("searchText") String searchText);
 
     String getBoardTest();
+
+    void excelToInsert(BoardModel boardModel);
+
+    void excelToUpdate(BoardModel boardModel);
 }

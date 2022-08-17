@@ -48,6 +48,15 @@
         Insert into testdb.board (title, content, writer, pageNum, binaryFile)
                             value('Test', 'Test', 'Test', 1, #{binaryFile})
     </insert>
+    <insert id="excelToInsert">
+        Insert into testdb.board (title, content, writer, save_date)
+        value(#{title}, #{content}, #{writer}, #{save_date})
+    </insert>
+    <update id="excelToUpdate">
+        UPDATE testdb.board
+        SET title=#{title}, content=#{content}, writer=#{writer}, save_date=#{save_date}
+        WHERE uid=#{uid}
+    </update>
 
 
 </mapper>

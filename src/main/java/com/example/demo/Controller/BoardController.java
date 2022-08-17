@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Log
@@ -243,7 +244,7 @@ public class BoardController {
         try{
             FileInputStream file = new FileInputStream("C:\\Users\\WHtra\\Desktop\\학습\\test.xlsx");
             XSSFWorkbook workbook = new XSSFWorkbook(file);
-
+            List<BoardModel> boardModels = new ArrayList<BoardModel>();
             int rowNo = 0;
             int cellIndex = 0;
 
@@ -255,44 +256,92 @@ public class BoardController {
                 if (row != null){
                     int cells = row.getPhysicalNumberOfCells();
 
+                    BoardModel boardModel = new BoardModel();
+
                     for (cellIndex = 0; cellIndex <= cells; cellIndex++){
                         XSSFCell cell = row.getCell(cellIndex);
-                        String value="";
+                        String strValue="";
+                        int intValue = 0;
+
+                        boolean toggle = false;
+
                         if (cell == null){
                             continue;
                         }else {
 
                             switch (cell.getCellType()){
                                 case XSSFCell.CELL_TYPE_FORMULA:
-                                    value = cell.getCellFormula();
+                                    strValue = cell.getCellFormula();
+
                                     break;
                                 case XSSFCell.CELL_TYPE_NUMERIC:
-                                    value = cell.getNumericCellValue() + "";
+                                    intValue = (int)cell.getNumericCellValue();
+                                    toggle = true;
                                     break;
                                 case XSSFCell.CELL_TYPE_STRING:
-                                    value = cell.getStringCellValue() + "";
+                                    strValue = cell.getStringCellValue() + "";
+                                    toggle = false;
                                     break;
                                 case XSSFCell.CELL_TYPE_BLANK:
-                                    value = cell.getBooleanCellValue() + "";
+                                    strValue = cell.getBooleanCellValue() + "";
                                     break;
                                 case XSSFCell.CELL_TYPE_ERROR:
-                                    value = cell.getErrorCellValue() + "";
+                                    strValue = cell.getErrorCellValue() + "";
                                     break;
 
                             }
                         }
-                        log.info(rowNo + "번 행 : " + cellIndex + "번 열 값은: " + value);
+
+
+
+                            switch (cellIndex){
+                                case 0:
+                                    boardModel.setUid(intValue);
+                                    break;
+                                case 1:
+                                    boardModel.setTitle(strValue);
+                                    break;
+                                case 2:
+                                    boardModel.setContent(strValue);
+                                    break;
+                                case 3:
+                                    boardModel.setWriter(strValue);
+                                    break;
+                                case 4:
+                                    boardModel.setSave_date(strValue);
+                                    break;
+
+                            }
+
+
+                        if (toggle){
+                            log.info(rowNo + "번 행 : " + cellIndex + "번 열 값은: " + intValue);
+                        } else {
+                            log.info(rowNo + "번 행 : " + cellIndex + "번 열 값은: " + strValue);
+                        }
+
+
+                    }
+                    if (rowNo != 0){
+                        boardModels.add(boardModel);
                     }
                 }
             }
 
+            log.info( "boardModels : " + boardModels);
+
+            for (BoardModel model:boardModels){
+
+                if (model.getUid() == 0) {
+                    boardService.excelToInsert(model);
+                }else {
+                    boardService.excelToUpdate(model);
+                }
+            }
 
         }catch (Exception e){
             e.printStackTrace();
         }
-
-
-
 
         return "board/excelToDataResult";
     }

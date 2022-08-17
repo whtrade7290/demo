@@ -33,6 +33,7 @@ public class BoardService {
         boardMapper.insertTest(out);
     }
 
+
     public void testSelect() {
         boardMapper.testSelect();
     }
@@ -45,4 +46,11 @@ public class BoardService {
         return boardMapper.getBoardTest();
     }
 
+    public  void excelToInsert(BoardModel boardModel){
+        boardMapper.excelToInsert(boardModel);
+    }
+
+    public void excelToUpdate(BoardModel model) {
+        boardMapper.excelToUpdate(model);
+    }
 }
