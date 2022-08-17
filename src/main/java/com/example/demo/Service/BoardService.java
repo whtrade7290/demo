@@ -53,4 +53,8 @@ public class BoardService {
     public void excelToUpdate(BoardModel model) {
         boardMapper.excelToUpdate(model);
     }
+
+    public void insertBoard(BoardModel boardModel) {
+        boardMapper.insertBoard(boardModel);
+    }
 }

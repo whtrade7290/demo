@@ -29,4 +29,6 @@ public interface BoardMapper {
     void excelToInsert(BoardModel boardModel);
 
     void excelToUpdate(BoardModel boardModel);
+
+    void insertBoard(BoardModel boardModel);
 }

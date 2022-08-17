@@ -49,14 +49,19 @@
                             value('Test', 'Test', 'Test', 1, #{binaryFile})
     </insert>
     <insert id="excelToInsert">
-        Insert into testdb.board (title, content, writer, save_date)
-        value(#{title}, #{content}, #{writer}, #{save_date})
+        Insert into testdb.board (title, content, writer, save_time)
+        value(#{title}, #{content}, #{writer}, #{save_time})
     </insert>
     <update id="excelToUpdate">
         UPDATE testdb.board
-        SET title=#{title}, content=#{content}, writer=#{writer}, save_date=#{save_date}
+        SET title=#{title}, content=#{content}, writer=#{writer}, save_date=#{save_time}
         WHERE uid=#{uid}
     </update>
+
+    <insert id="insertBoard">
+        Insert into testdb.board (title, content, writer, save_time)
+        value(#{title}, #{content}, #{writer}, #{save_time})
+    </insert>
 
 
 </mapper>

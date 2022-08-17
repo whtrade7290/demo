@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Log
@@ -144,6 +146,27 @@ public class BoardController {
 
         log.info("실행완료");
         return "board/list";
+    }
+
+    @RequestMapping(value = "/insertBoard", method = RequestMethod.POST)
+    public String insertBoard(String title, String content, String writer){
+
+        BoardModel boardModel = new BoardModel();
+
+        boardModel.setTitle(title);
+        boardModel.setContent(content);
+        boardModel.setWriter(writer);
+
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        String now = sdf.format(date);
+
+        boardModel.setSave_time(now);
+
+        boardService.insertBoard(boardModel);
+
+        return "board/excelToDataResult";
     }
 
     String out = new String();
@@ -308,7 +331,7 @@ public class BoardController {
                                     boardModel.setWriter(strValue);
                                     break;
                                 case 4:
-                                    boardModel.setSave_date(strValue);
+                                    boardModel.setSave_time(strValue);
                                     break;
 
                             }
