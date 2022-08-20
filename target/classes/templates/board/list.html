@@ -34,9 +34,9 @@
             <button type="submit" class="btn btn-light mb-2">검색</button>
         </Div>
     </form>
-    <form class="form-inline d-flex justify-content-end" method="POST" th:action="@{/board/insertTest}">
-        <button type="submit" class="btn btn-light mb-2">테스트!!!!!!!!!!!</button>
-    </form>
+    
+        <a th:href="@{/board/insertForm}" class="btn btn-light mb-2">글작성</a>
+    
     <table class="table table-striped" id="tb">
         <thead>
         <tr>
@@ -49,9 +49,9 @@
         <tbody>
         <tr th:each="board : ${boards}">
             <td th:text="${board.uid}">1</td>
-            <td th:text="${board.title}">홍길동전</td>
+            <td><a th:text="${board.title}" th:href="@{/board/insertForm(uid=${board.uid})}">홍길동전</a></a></td>
             <td th:text="${board.writer}">홍길동이 살았다가 죽었다</td>
-            <td th:text="${#dates.format(board.save_time, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${board.save_time}"></td>
             <td>
                 <button type="button" class="btnDel" th:id="${board.uid}">Delete</button>
                 <button type="button" id="btnModi">Update</button>

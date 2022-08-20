@@ -30,5 +30,7 @@ public interface BoardMapper {
 
     void excelToUpdate(BoardModel boardModel);
 
-    void insertBoard(BoardModel boardModel);
+    void insertForm(BoardModel boardModel);
+
+    BoardModel findById(int uid);
 }

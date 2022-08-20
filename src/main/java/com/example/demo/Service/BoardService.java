@@ -54,7 +54,11 @@ public class BoardService {
         boardMapper.excelToUpdate(model);
     }
 
-    public void insertBoard(BoardModel boardModel) {
-        boardMapper.insertBoard(boardModel);
+    public void insertForm(BoardModel boardModel) {
+        boardMapper.insertForm(boardModel);
+    }
+
+    public BoardModel findById(int uid) {
+        return boardMapper.findById(uid);
     }
 }

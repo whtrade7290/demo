@@ -3,6 +3,7 @@ package com.example.demo.Controller;
 import com.example.demo.Model.BoardModel;
 import com.example.demo.Model.PageModel;
 import com.example.demo.Service.BoardService;
+import com.example.demo.Validator.BoardValidator;
 import lombok.extern.java.Log;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -13,11 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,6 +32,9 @@ public class BoardController {
 
     @Autowired
     private BoardService boardService;
+
+    @Autowired
+    private BoardValidator boardValidator;
 
     
     @RequestMapping("/list")
@@ -138,24 +142,32 @@ public class BoardController {
 
         return "board/list";
     }
-    @RequestMapping(value = "/insertTest", method = RequestMethod.POST)
-    public String insertTest(){
+    @RequestMapping(value = "/insertForm")
+    public String insertForm(Model model, @RequestParam(required = false, defaultValue = "0") int uid){
+        if(uid == 0){
+            model.addAttribute("boardModel", new BoardModel());
+        } else {
+            BoardModel boardModel = boardService.findById(uid);
 
-        boardService.testSelect();
-        boardService.insertTest("");
+            if (boardModel.getTitle().isEmpty()){
+                boardModel = null;
+            }
 
-        log.info("실행완료");
-        return "board/list";
+            model.addAttribute("boardModel",boardModel);
+        }
+
+
+        return "board/insertForm";
     }
 
-    @RequestMapping(value = "/insertBoard", method = RequestMethod.POST)
-    public String insertBoard(String title, String content, String writer){
+    @RequestMapping(value = "/insertForm", method = RequestMethod.POST)
+    public String insertForm(@Valid BoardModel boardModel, BindingResult bindingResult){
+        log.info("insertForm 호출");
+        boardValidator.validate(boardModel, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "board/insertForm";
+        }
 
-        BoardModel boardModel = new BoardModel();
-
-        boardModel.setTitle(title);
-        boardModel.setContent(content);
-        boardModel.setWriter(writer);
 
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -163,10 +175,13 @@ public class BoardController {
         String now = sdf.format(date);
 
         boardModel.setSave_time(now);
+        boardModel.setWriter("admin");
 
-        boardService.insertBoard(boardModel);
+        log.info("boardModel == " + boardModel);
 
-        return "board/excelToDataResult";
+        boardService.insertForm(boardModel);
+
+        return "redirect:/board/list";
     }
 
     String out = new String();

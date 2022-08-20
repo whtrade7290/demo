@@ -58,10 +58,16 @@
         WHERE uid=#{uid}
     </update>
 
-    <insert id="insertBoard">
+    <insert id="insertForm">
         Insert into testdb.board (title, content, writer, save_time)
         value(#{title}, #{content}, #{writer}, #{save_time})
     </insert>
+
+    <select id="findById" resultType="com.example.demo.Model.BoardModel">
+        SELECT uid, title, content, writer
+        FROM testdb.board
+        WHERE uid = #{uid}
+    </select>
 
 
 </mapper>
