@@ -28,7 +28,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/", "/account/register", "/css/**", "/api/**").permitAll()
+                // /css/** 하위 폴더 모두 permitAll 처리
+                .antMatchers("/", "/account/register", "/css/**", "/api/**","/mail/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -55,7 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }
